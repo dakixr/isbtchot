@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "isbtchot"
+version = "0.0.1"
+description = "TBD"
+readme = "README.md"
+authors = [{ name = "Daniel", email = "dakixr@gmail.com" }]
+dependencies = ["pandas","plotext","requests"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
+exclude = ["tests*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+easy_mapper = ["data/*"]
