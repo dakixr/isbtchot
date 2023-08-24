@@ -1,6 +1,11 @@
 # isbtchot: BTC Hotness Index Dashboard
 
-The `isbtchot` package provides a minimalist terminal dashboard for BTC's hotness index. It uses historical BTC data to create both BTC's price and PI (Price Indicator) visualizations right in your terminal.
+The `isbtchot` package provides a minimalist terminal dashboard for BTC's hotness index. It uses historical BTC data to create both BTC's price and Hotness Index visualizations right in your terminal.
+
+# Demo
+
+![BTC Hotness Index Dashboard Demo](media/demo.png)
+
 
 ## Features:
 
@@ -10,7 +15,7 @@ The `isbtchot` package provides a minimalist terminal dashboard for BTC's hotnes
 
 ## Installation
 
-This is a hypothetical package, so no installation details are provided.
+TODO: ...
 
 ## Usage
 
