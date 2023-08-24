@@ -10,19 +10,20 @@ The `isbtchot` package provides a minimalist terminal dashboard for BTC's hotnes
 ## Features:
 
 - BTC monthly candlestick plot with log scale.
-- Hotness index based on PI (Price Indicator) with buy/sell signals.
+- Hotness index based on PI with buy/sell signals.
 - Data is cached to speed up subsequent requests.
 
 ## Installation
 
-TODO: ...
-
+```bash
+pip install isbtchot
+```
 ## Usage
 
 You can run the main dashboard with:
 
 ```bash
-$ python -m isbtchot [year]
+python -m isbtchot [year]
 ```
 
 Where `year` is an optional argument to specify the number of years of data you want to visualize. By default, it uses 7 years of data.
