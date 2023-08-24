@@ -66,7 +66,3 @@ Sell and buy signals are determined based on the PI values:
 ## Contributions
 
 Please raise an issue or provide a pull request for any enhancements, bug fixes or features you'd like to add.
-
-## License
-
-This project is under the MIT license. 
