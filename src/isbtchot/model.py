@@ -1,8 +1,6 @@
-import numpy as np
 import requests
 import datetime
 import pandas as pd
-import os
 import isbtchot
 
 
@@ -10,14 +8,14 @@ CACHE_BTC_PATH = isbtchot.root_path / "cache" / "btc.csv"
 
 
 def btc_historical_daily() -> pd.DataFrame:
-    os.makedirs(CACHE_BTC_PATH.parent, exist_ok=True)
+    # Ensure the directory exists
+    CACHE_BTC_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    # Check if the file exists and was modified today
     if (
-        os.path.isfile(CACHE_BTC_PATH)
-        and (
-            datetime.datetime.today()
-            - datetime.datetime.fromtimestamp(os.path.getmtime(CACHE_BTC_PATH))
-        ).days
-        == 0
+        CACHE_BTC_PATH.is_file()
+        and datetime.datetime.fromtimestamp(CACHE_BTC_PATH.stat().st_mtime).date()
+        == datetime.datetime.today().date()
     ):
         df = pd.read_csv(CACHE_BTC_PATH)
 
@@ -74,12 +72,14 @@ def btc_monthly(months):
     df = df.rename(
         {"open": "Open", "close": "Close", "high": "High", "low": "Low"}, axis=1
     )
-    df = df.resample("M").agg({
-        'Open': 'first',
-        'High': 'max',
-        'Low': 'min',
-        'Close': 'last',
-    })
+    df = df.resample("M").agg(
+        {
+            "Open": "first",
+            "High": "max",
+            "Low": "min",
+            "Close": "last",
+        }
+    )
     if months:
         df = df.iloc[-months:]
     return df
