@@ -46,7 +46,7 @@ Where `year` is an optional argument to specify the number of years of data you 
 
 ### BTC PI Calculation
 
-The PI (Price Indicator) is based on the moving averages of BTC's daily price. Here's a brief overview:
+The PI is based on the moving averages of BTC's daily price. Here's a brief overview:
 
 - **SMA111**: 111-day Simple Moving Average of the price.
 - **SMA350x2**: Double the 350-day Simple Moving Average of the price.
