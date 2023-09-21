@@ -2,6 +2,7 @@ import requests
 import datetime
 import pandas as pd
 import isbtchot
+from isbtchot.schemas.args import TypeTime
 
 
 CACHE_BTC_PATH = isbtchot.root_path / "cache" / "btc.csv"
@@ -20,9 +21,18 @@ def btc_historical_daily() -> pd.DataFrame:
         df = pd.read_csv(CACHE_BTC_PATH)
 
     else:
-        data = requests.get(
-            "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&allData=true"
-        ).json()["Data"]["Data"]
+        try:
+            data = requests.get(
+                "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&allData=true"
+            ).json()["Data"]["Data"]
+
+        except Exception as _:
+            # Try without ssl enabled
+            data = requests.get(
+                "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&allData=true",
+                verify=False
+            ).json()["Data"]["Data"]
+
         df = pd.DataFrame(data)
         df.to_csv(CACHE_BTC_PATH, index=False)
 
@@ -31,7 +41,7 @@ def btc_historical_daily() -> pd.DataFrame:
     return df
 
 
-def btc_pi(months):
+def btc_pi(time_grouping: TypeTime, periods_back: int):
     df = btc_historical_daily()[["close"]].rename({"close": "price"}, axis=1)
 
     df["sma111"] = df["price"].rolling(window=111).mean()
@@ -42,14 +52,14 @@ def btc_pi(months):
     df = df.dropna()
 
     # Sell Indicator
-    mask_pi_sell = (df["pi"].shift(-1) < 1) & (df["pi"] >= 1)
+    mask_pi_sell = (df["pi"].shift(-1) > 1) & (df["pi"] <= 1)
     df["pi_sell"] = mask_pi_sell
 
     # Buy indicator
-    mask_pi_buy = (df["pi"].shift(-1) > 0.35) & (df["pi"] <= 0.35)
+    mask_pi_buy = (df["pi"].shift(-1) < 0.35) & (df["pi"] >= 0.35)
     df["pi_buy"] = mask_pi_buy
 
-    df = df.resample("M").agg(
+    df = df.resample(time_grouping.value).agg(
         {
             "price": "last",
             "pi": "max",
@@ -61,18 +71,18 @@ def btc_pi(months):
     df = df.reset_index()
     df.time = df.time.dt.strftime("%d/%m/%Y")
 
-    if months:
-        df = df.iloc[-months:]
+    if periods_back:
+        df = df.iloc[-periods_back:]
 
     return df
 
 
-def btc_monthly(months):
+def btc_hist(time_grouping: TypeTime, periods_back: int):
     df = btc_historical_daily()
     df = df.rename(
         {"open": "Open", "close": "Close", "high": "High", "low": "Low"}, axis=1
     )
-    df = df.resample("M").agg(
+    df = df.resample(time_grouping.value).agg(
         {
             "Open": "first",
             "High": "max",
@@ -80,6 +90,6 @@ def btc_monthly(months):
             "Close": "last",
         }
     )
-    if months:
-        df = df.iloc[-months:]
+    if periods_back:
+        df = df.iloc[-periods_back:]
     return df

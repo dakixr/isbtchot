@@ -1,21 +1,35 @@
 from isbtchot import controller
+from isbtchot.schemas.args import TypeTime
 import argparse
 
 parser = argparse.ArgumentParser(description="BTC Hotness Index", prog="isbtchot")
 
 # Add an optional positional argument named 'year' with default value of 6
 parser.add_argument(
-    "year",
+    "-periods_back",
+    "--p",
     type=int,
-    nargs="?",
-    default=7,
-    help="The year to be processed. Defaults to 6 if not provided.",
+    default=85,
+    help="Periods back to be processed. Defaults to 50 if not provided.",
 )
 
-def main(year):
-    controller.dashboard(months=12 * year)
+parser.add_argument(
+    "-time",
+    "--t",
+    type=TypeTime,
+    default=TypeTime.WEEK,
+    help="Candle stick time to use. Defaults to W (Weekly),"
+)
+
+
+def main():
+
+    # Parse args
+    args = parser.parse_args()
+    time_grouping: TypeTime = args.t
+    periods_back: int = args.p
+
+    controller.dashboard(periods_back=periods_back, time_grouping=time_grouping)
 
 if __name__ == "__main__":
-    args = parser.parse_args()
-    year = args.year
-    main(year)
+    main()
