@@ -31,10 +31,10 @@ isbtchot [-periods_back P] [-time T]
 
 ### Command Line Arguments
 
-| Argument        | Short Form | Type      | Description                                                | Default               |
-|-----------------|------------|-----------|------------------------------------------------------------|-----------------------|
-| `--periods_back`| `-p`       | int       | Number of periods to be processed.                         | 85                    |
-| `--time`        | `-t`       | TypeTime  | Candlestick time to use (e.g., D for Daily, W for Weekly). | W                     |
+| Argument        | Short Form | Description                                                | Default               |
+|-----------------|------------|------------------------------------------------------------|-----------------------|
+| `--periods_back`| `-p`       | Number of periods to be processed.                         | 85                    |
+| `--time`        | `-t`       | Candlestick time to use (e.g., D for Daily, W for Weekly). | W                     |
 
 ## Notes
 
