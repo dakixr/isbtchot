@@ -6,7 +6,6 @@ The `isbtchot` package provides a minimalist terminal dashboard for BTC's hotnes
 
 ![BTC Hotness Index Dashboard Demo](media/demo.png)
 
-
 ## Features:
 
 - BTC monthly candlestick plot with log scale.
@@ -32,10 +31,10 @@ isbtchot [-periods_back P] [-time T]
 
 ### Command Line Arguments
 
-| Argument       | Short Form | Type      | Description                                          | Default               |
-|----------------|------------|-----------|------------------------------------------------------|-----------------------|
-| `-periods_back`| `--p`      | int       | Number of periods to be processed.                    | 85                    |
-| `-time`        | `--t`      | TypeTime  | Candlestick time to use (e.g., D for Daily, W for Weekly). | W (Weekly) |
+| Argument        | Short Form | Type      | Description                                                | Default               |
+|-----------------|------------|-----------|------------------------------------------------------------|-----------------------|
+| `--periods_back`| `-p`       | int       | Number of periods to be processed.                         | 85                    |
+| `--time`        | `-t`       | TypeTime  | Candlestick time to use (e.g., D for Daily, W for Weekly). | W                     |
 
 ## Notes
 
