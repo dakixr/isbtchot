@@ -26,8 +26,8 @@ def main():
 
     # Parse args
     args = parser.parse_args()
-    time_grouping: TypeTime = args.t
-    periods_back: int = args.p
+    time_grouping: TypeTime = args.time
+    periods_back: int = args.periods_back
 
     controller.dashboard(periods_back=periods_back, time_grouping=time_grouping)
 
