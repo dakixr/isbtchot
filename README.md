@@ -18,51 +18,24 @@ The `isbtchot` package provides a minimalist terminal dashboard for BTC's hotnes
 ```bash
 pip install isbtchot
 ```
+
 ## Usage
 
 You can run the main dashboard with:
 
 ```bash
-python -m isbtchot [year]
+isbtchot [-periods_back P] [-time T]
 ```
 
-Where `year` is an optional argument to specify the number of years of data you want to visualize. By default, it uses 7 years of data.
+- `-periods_back` or `--p`: Specifies the number of periods (e.g., weeks, months) of data you want to visualize. By default, it uses 85 periods.
+- `-time` or `--t`: Specifies the candlestick time to use (e.g., Daily, Weekly). By default, it uses Weekly.
 
 ### Command Line Arguments
 
-| Argument | Type | Description | Default |
-|---|---|---|---|
-| year | int | The year to be processed. Determines the duration for data visualization. | 7 |
-
-## Implementation Details
-
-### Directories and Files
-
-- **__init__.py**: Contains root path to support relative paths in other modules.
-- **__main__.py**: Main script to parse command-line arguments and invoke the dashboard.
-- **controller.py**: The controller module orchestrates data retrieval and visualization.
-- **model.py**: Manages data retrieval from CryptoCompare API and data processing.
-- **view.py**: Handles all the terminal-based visualizations using `plotext` package.
-
-### BTC PI Calculation
-
-The PI is based on the moving averages of BTC's daily price. Here's a brief overview:
-
-- **SMA111**: 111-day Simple Moving Average of the price.
-- **SMA350x2**: Double the 350-day Simple Moving Average of the price.
-- **PI**: `SMA111 / SMA350x2`.
-
-Sell and buy signals are determined based on the PI values:
-
-- **Sell Signal**: When PI shifts from being >=1 to <1.
-- **Buy Signal**: When PI shifts from being <=0.35 to >0.35.
-
-## Dependencies
-
-- **plotext**: For terminal-based plots.
-- **pandas**: For data manipulation.
-- **numpy**: Mathematical operations.
-- **requests**: To fetch BTC historical data.
+| Argument       | Short Form | Type      | Description                                          | Default               |
+|----------------|------------|-----------|------------------------------------------------------|-----------------------|
+| `-periods_back`| `--p`      | int       | Number of periods to be processed.                    | 85                    |
+| `-time`        | `--t`      | TypeTime  | Candlestick time to use (e.g., D for Daily, W for Weekly). | W (Weekly) |
 
 ## Notes
 
