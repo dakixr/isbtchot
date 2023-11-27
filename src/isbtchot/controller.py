@@ -14,7 +14,10 @@ def btc_pi_terminal(time_grouping: TypeTime, periods_back):
     df = model.btc_pi(time_grouping, periods_back)
     view.chart_terminal(df.time, df.pi, "Hotness Index")
     view.add_horizontal_line(1, "red")
-    view.add_horizontal_line(0.35, "green")
+    view.add_horizontal_line(0.95, "red")
+    view.add_horizontal_line(0.80, "orange")
+    view.add_horizontal_line(0.66, "green")
+    view.add_horizontal_line(0.35, "blue")
     for _, row in df.iterrows():
         if row.pi_sell:
             view.add_vertical_line(row.time, "red")
