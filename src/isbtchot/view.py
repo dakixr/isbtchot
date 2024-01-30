@@ -22,14 +22,14 @@ class ViewPlotText():
     def chart_terminal(self, x, y, title):
         self.plt.plot(x, y)
         self.plt.title(title)
-        self.plt.yticks([])
+        #self.plt.yticks([])
 
 
     def candle_stick_terminal(self, data, title):
         dates = self.plt.datetimes_to_string(data.index)
         self.plt.candlestick(dates=dates, data=data)
         self.plt.title(title)
-        self.plt.yticks([])
+        #self.plt.yticks([])
 
     def add_horizontal_line(self, value, color):
         self.plt.hline(value, color=color)

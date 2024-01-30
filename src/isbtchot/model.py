@@ -51,12 +51,15 @@ def btc_pi(time_grouping: TypeTime, periods_back: int):
     df = df.drop(["sma111", "sma350x2"], axis=1)
     df = df.dropna()
 
+    # Normalize pi
+    df["pi"] = (df["pi"] - 0.35) / (1 - 0.35) 
+
     # Sell Indicator
-    mask_pi_sell = (df["pi"].shift(-1) > 1) & (df["pi"] <= 1)
+    mask_pi_sell = (df["pi"].shift(-1) >= 1) & (df["pi"] < 1)
     df["pi_sell"] = mask_pi_sell
 
     # Buy indicator
-    mask_pi_buy = (df["pi"].shift(-1) < 0.35) & (df["pi"] >= 0.35)
+    mask_pi_buy = (df["pi"].shift(-1) <= 0) & (df["pi"] > 0)
     df["pi_buy"] = mask_pi_buy
 
     df = df.resample(time_grouping.value).agg(
@@ -93,3 +96,4 @@ def btc_hist(time_grouping: TypeTime, periods_back: int):
     if periods_back:
         df = df.iloc[-periods_back:]
     return df
+

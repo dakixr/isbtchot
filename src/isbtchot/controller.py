@@ -14,16 +14,16 @@ def btc_pi_terminal(time_grouping: TypeTime, periods_back):
     df = model.btc_pi(time_grouping, periods_back)
     view.chart_terminal(df.time, df.pi, "Hotness Index")
     view.add_horizontal_line(1, "red")
-    view.add_horizontal_line(0.95, "red")
-    view.add_horizontal_line(0.80, "orange")
-    view.add_horizontal_line(0.66, "green")
-    view.add_horizontal_line(0.35, "blue")
+    view.add_horizontal_line((0.95 - 0.35) / (1 - 0.35), "red")
+    view.add_horizontal_line((0.80 - 0.35) / (1 - 0.35), "orange")
+    view.add_horizontal_line((0.66 - 0.35) / (1 - 0.35), "green")
+    view.add_horizontal_line(0, "blue")
     for _, row in df.iterrows():
         if row.pi_sell:
             view.add_vertical_line(row.time, "red")
         if row.pi_buy:
             view.add_vertical_line(row.time, "green")
-    view.plt.ylim(0.20, 1.1)
+    view.plt.ylim(df.pi.min(), max(1, df.pi.max()))
     
 
 def dashboard(time_grouping: TypeTime, periods_back: int):
