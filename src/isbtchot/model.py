@@ -6,6 +6,9 @@ from isbtchot.schemas.args import TypeTime
 
 
 CACHE_BTC_PATH = isbtchot.root_path / "cache" / "btc.csv"
+BTC_API = (
+    "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&allData=true"
+)
 
 
 def btc_historical_daily() -> pd.DataFrame:
@@ -20,18 +23,14 @@ def btc_historical_daily() -> pd.DataFrame:
     ):
         df = pd.read_csv(CACHE_BTC_PATH)
 
+    # Fetch new data
     else:
         try:
-            data = requests.get(
-                "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&allData=true"
-            ).json()["Data"]["Data"]
+            data = requests.get(BTC_API).json()["Data"]["Data"]
 
         except Exception as _:
             # Try without ssl enabled
-            data = requests.get(
-                "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&allData=true",
-                verify=False
-            ).json()["Data"]["Data"]
+            data = requests.get(BTC_API, verify=False).json()["Data"]["Data"]
 
         df = pd.DataFrame(data)
         df.to_csv(CACHE_BTC_PATH, index=False)
@@ -41,7 +40,7 @@ def btc_historical_daily() -> pd.DataFrame:
     return df
 
 
-def btc_pi(time_grouping: TypeTime, periods_back: int):
+def btc_pi(time_grouping: TypeTime, periods_back: int | None = None):
     df = btc_historical_daily()[["close"]].rename({"close": "price"}, axis=1)
 
     df["sma111"] = df["price"].rolling(window=111).mean()
@@ -52,7 +51,7 @@ def btc_pi(time_grouping: TypeTime, periods_back: int):
     df = df.dropna()
 
     # Normalize pi
-    df["pi"] = (df["pi"] - 0.35) / (1 - 0.35) 
+    df["pi"] = (df["pi"] - 0.35) / (1 - 0.35)
 
     # Sell Indicator
     mask_pi_sell = (df["pi"].shift(-1) >= 1) & (df["pi"] < 1)
@@ -75,6 +74,7 @@ def btc_pi(time_grouping: TypeTime, periods_back: int):
     df.time = df.time.dt.strftime("%d/%m/%Y")
 
     if periods_back:
+        periods_back = min(periods_back, len(df))
         df = df.iloc[-periods_back:]
 
     return df
@@ -96,4 +96,3 @@ def btc_hist(time_grouping: TypeTime, periods_back: int):
     if periods_back:
         df = df.iloc[-periods_back:]
     return df
-
