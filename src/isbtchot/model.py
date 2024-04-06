@@ -80,19 +80,20 @@ def btc_pi(time_grouping: TypeTime, periods_back: int | None = None):
     return df
 
 
-def btc_hist(time_grouping: TypeTime, periods_back: int):
+def btc_hist(time_grouping: TypeTime | None = None, periods_back: int | None = None):
     df = btc_historical_daily()
     df = df.rename(
         {"open": "Open", "close": "Close", "high": "High", "low": "Low"}, axis=1
     )
-    df = df.resample(time_grouping.value).agg(
-        {
-            "Open": "first",
-            "High": "max",
-            "Low": "min",
-            "Close": "last",
-        }
-    )
+    if time_grouping:
+        df = df.resample(time_grouping.value).agg(
+            {
+                "Open": "first",
+                "High": "max",
+                "Low": "min",
+                "Close": "last",
+            }
+        )
     if periods_back:
         df = df.iloc[-periods_back:]
     return df
