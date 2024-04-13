@@ -43,7 +43,7 @@ Historically very reliable for bull market tops:
 ![BTC Hotness Index Dashboard Demo](media/demo.png)
 
 ### Power Law Delta Dashboard
-Historically very reliable for bull market bottoms:
+Historically very reliable for bear market bottoms:
 ![BTC Power Law Delta Dashboard Demo](media/demo2.png)
 
 ## Notes
