@@ -1,8 +1,10 @@
+import numpy as np
 import requests
 import datetime
 import pandas as pd
 import isbtchot
 from isbtchot.schemas.args import TypeTime
+from sklearn.linear_model import LinearRegression
 
 
 CACHE_BTC_PATH = isbtchot.root_path / "cache" / "btc.csv"
@@ -96,4 +98,58 @@ def btc_hist(time_grouping: TypeTime | None = None, periods_back: int | None = N
         )
     if periods_back:
         df = df.iloc[-periods_back:]
+    return df
+
+
+def btc_power_law(
+    time_grouping: TypeTime | None = None,
+    periods_back: int | None = None,
+    years_to_predict: int = 20,
+) -> pd.DataFrame:
+    df = btc_hist(time_grouping=time_grouping)[["Close"]].rename(
+        {"Close": "price"}, axis=1
+    )
+
+    # Adjust for genesis block
+    genesis_delta = (df.index[0] - pd.Timestamp(year=2009, month=1, day=3)).days
+    if time_grouping is TypeTime.WEEK:
+        genesis_delta /= 7
+    elif time_grouping is TypeTime.MONTH:
+        genesis_delta /= 30
+
+    df["days"] = np.arange(len(df)) + genesis_delta
+    # Applying log transformation
+    X_log = np.log(df["days"].values.reshape(-1, 1))
+    y_log = np.log(df["price"].values)
+
+    # Fit the linear regression model on the log-transformed data
+    power_law_model = LinearRegression().fit(X_log, y_log)
+
+    # The coefficient 'b' is the slope of the line in the log-log space
+    b = power_law_model.coef_[0]
+    # The coefficient 'a' is obtained by taking the exponential of the intercept in the log-log space
+    a = np.exp(power_law_model.intercept_)
+
+    # Extend df
+    periods = 365 * years_to_predict
+    df = pd.concat(
+        [
+            df,
+            pd.DataFrame(
+                {
+                    "days": np.arange(periods) + df.days.iloc[-1],
+                },
+                index=pd.date_range(df.index[-1], periods=periods, freq="D"),
+            ),
+        ]
+    )
+
+    # Using the power law model to predict prices across the original range of days
+    df["power_law"] = a * (df.days**b)
+    df["power_law_bottom"] = df.power_law * 0.45
+    df["power_law_top"] = df.power_law * 3
+    df["delta"] = df.price / df.power_law
+
+    if periods_back:
+        df = df.dropna().iloc[-periods_back:]
     return df

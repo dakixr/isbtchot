@@ -4,13 +4,12 @@ import argparse
 
 parser = argparse.ArgumentParser(description="BTC Hotness Index", prog="isbtchot")
 
-# Add an optional positional argument named 'year' with default value of 6
 parser.add_argument(
     "-p",
     "--periods_back",
     type=int,
     default=85,
-    help="Periods back to be processed. Defaults to 50 if not provided.",
+    help="Periods back to be processed. Defaults to 85 if not provided.",
 )
 
 parser.add_argument(
@@ -18,7 +17,15 @@ parser.add_argument(
     "--time",
     type=TypeTime,
     default=TypeTime.WEEK,
-    help="Candle stick time to use. Defaults to W (Weekly),"
+    help="Candle stick time to use: ME or W. Defaults to W (Weekly)",
+)
+
+parser.add_argument(
+    "-d",
+    "--dashboard",
+    type=str,
+    default="isbtchot",
+    help="Dashboard to display: 'isbtchot' or 'power_law'. Defaults to 'isbtchot'.",
 )
 
 
@@ -28,8 +35,18 @@ def main():
     args = parser.parse_args()
     time_grouping: TypeTime = args.time
     periods_back: int = args.periods_back
+    dashboard: str = args.dashboard
 
-    controller.dashboard(periods_back=periods_back, time_grouping=time_grouping)
+    if dashboard == "isbtchot":
+        controller.dashboard_isbtchot(
+            periods_back=periods_back, time_grouping=time_grouping
+        )
+    elif dashboard == "power_law":
+        controller.dashboard_power_law(
+            periods_back=periods_back, time_grouping=time_grouping
+        )
+    else:
+        raise ValueError(f"Unknown dashboard: '{dashboard}'. Expected 'isbtchot' or 'power_law'.")
 
 if __name__ == "__main__":
     main()
