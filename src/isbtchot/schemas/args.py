@@ -1,5 +1,5 @@
 from enum import Enum
 
 class TypeTime(Enum):
-    MONTH = "ME"
+    MONTH = "M"
     WEEK = "W"

@@ -33,7 +33,7 @@ isbtchot [--periods_back P] [--time T] [--dashboard D]
 | Argument       | Short Form | Description                                                                     | Default   |
 |----------------|------------|---------------------------------------------------------------------------------|-----------|
 | `--periods_back` | `-p`       | Number of periods to be processed for the data visualization.                    | 85        |
-| `--time`        | `-t`       | Candlestick time to use (e.g., ME for Monthly, W for Weekly).                   | W         |
+| `--time`        | `-t`       | Candlestick time to use (e.g., M for Monthly, W for Weekly).                   | W         |
 | `--dashboard`   | `-d`       | Dashboard type to display: `isbtchot` or `power_law`.                           | isbtchot  |
 
 ## Demo

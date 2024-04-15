@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "isbtchot"
-version = "v1.1.0"
+version = "v1.1.1"
 description = "TBD"
 readme = "README.md"
 authors = [{ name = "Daniel", email = "dakixr@gmail.com" }]
-dependencies = ["pandas","plotext","requests"]
+dependencies = ["pandas","plotext","requests","scikit-learn"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
