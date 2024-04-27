@@ -22,7 +22,7 @@ plt.xscale('log')
 plt.yscale('log')
 
 # Find the date range
-date_range = pd.date_range(start=df.index.min(), end=df.index.max(), freq='4YS')
+date_range = pd.date_range(start=df.index.min(), end=df.index.max(), freq='1Y')
 
 # Calculate the number of days since the start for each year start
 xticks_yearly = [(date - df.index.min()).days for date in date_range]
