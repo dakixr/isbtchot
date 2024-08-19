@@ -6,6 +6,7 @@ import isbtchot
 from isbtchot.schemas.args import TypeTime
 from sklearn.linear_model import LinearRegression
 
+USE_CACHE = True
 
 CACHE_BTC_PATH = isbtchot.root_path / "cache" / "btc.csv"
 BTC_API = (
@@ -19,6 +20,7 @@ def btc_historical_daily() -> pd.DataFrame:
 
     # Check if the file exists and was modified today
     if (
+        USE_CACHE and
         CACHE_BTC_PATH.is_file()
         and datetime.datetime.fromtimestamp(CACHE_BTC_PATH.stat().st_mtime).date()
         == datetime.datetime.today().date()
