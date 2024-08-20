@@ -39,9 +39,10 @@ def btc_historical_daily(options=None) -> pd.DataFrame:
         except Exception as _:
             # Try without ssl enabled
             data = requests.get(BTC_API, verify=False).json()["Data"]["Data"]
-
         df = pd.DataFrame(data)
-        df.to_csv(CACHE_BTC_PATH, index=False)
+        
+        if use_cache:
+            df.to_csv(CACHE_BTC_PATH, index=False)
 
     df["time"] = pd.to_datetime(df["time"], unit="s")
     df.set_index("time", inplace=True)
