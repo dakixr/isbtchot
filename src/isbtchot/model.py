@@ -1,31 +1,33 @@
-import numpy as np
-import requests
 import datetime
+
+import numpy as np
 import pandas as pd
+import requests
+from sklearn.linear_model import LinearRegression
+
 import isbtchot
 from isbtchot.schemas.args import TypeTime
-from sklearn.linear_model import LinearRegression
 
 CACHE_BTC_PATH = isbtchot.root_path / "cache" / "btc.csv"
 BTC_API = (
     "https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&allData=true"
 )
 
+
 def btc_historical_daily(options=None) -> pd.DataFrame:
-    
     if not options:
         options = {}
-        
+
     use_cache = options.get("disable_cache") is None
-    
+
     if use_cache:
         # Ensure the directory exists
         CACHE_BTC_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     # Check if the file exists and was modified today
     if (
-        use_cache and
-        CACHE_BTC_PATH.is_file()
+        use_cache
+        and CACHE_BTC_PATH.is_file()
         and datetime.datetime.fromtimestamp(CACHE_BTC_PATH.stat().st_mtime).date()
         == datetime.datetime.today().date()
     ):
@@ -33,14 +35,9 @@ def btc_historical_daily(options=None) -> pd.DataFrame:
 
     # Fetch new data
     else:
-        try:
-            data = requests.get(BTC_API).json()["Data"]["Data"]
-
-        except Exception as _:
-            # Try without ssl enabled
-            data = requests.get(BTC_API, verify=False).json()["Data"]["Data"]
+        data = requests.get(BTC_API, verify=False).json()["Data"]["Data"]
         df = pd.DataFrame(data)
-        
+
         if use_cache:
             df.to_csv(CACHE_BTC_PATH, index=False)
 
@@ -89,7 +86,9 @@ def btc_pi(time_grouping: TypeTime, periods_back: int | None = None, **kwargs):
     return df
 
 
-def btc_hist(time_grouping: TypeTime | None = None, periods_back: int | None = None, **kwargs):
+def btc_hist(
+    time_grouping: TypeTime | None = None, periods_back: int | None = None, **kwargs
+):
     df = btc_historical_daily(**kwargs)
     df = df.rename(
         {"open": "Open", "close": "Close", "high": "High", "low": "Low"}, axis=1
@@ -112,7 +111,7 @@ def btc_power_law(
     time_grouping: TypeTime | None = None,
     periods_back: int | None = None,
     years_to_predict: int = 20,
-    **kwargs
+    **kwargs,
 ) -> pd.DataFrame:
     df = btc_hist(time_grouping=time_grouping, **kwargs)[["Close"]].rename(
         {"Close": "price"}, axis=1
